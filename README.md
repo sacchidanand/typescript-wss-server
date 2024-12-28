@@ -1,6 +1,15 @@
 # typescript-wss-server
 typescript-wss-server
 
+Reinstall
+rm -rf node_modules package-lock.json
+npm install
+
+rm -rf dist
+npm run build
+
+npm run dev
+
 
 1. How to run the project
 npm install ws
@@ -18,7 +27,11 @@ OR
 npm install --save-dev concurrently
 
 2. How to test from client
-Open browser console and type below
+
+- Open browser console and type below
+
 const ws = new WebSocket('ws://localhost:3000');
+
 ws.onopen = () => ws.send('Hello from Client 1!');
+
 ws.onmessage = (event) => console.log(event.data);

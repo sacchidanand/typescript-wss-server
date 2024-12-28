@@ -6,7 +6,8 @@ interface ExtWebSocket extends WebSocket {
   isAlive: boolean;
 }
 
-const PORT = process.env.PORT || 3000;
+// const PORT = process.env.PORT || 8080;
+const PORT = 8080;
 
 // Create the HTTP server
 const server = createServer((req, res) => {
@@ -33,8 +34,12 @@ function heartbeat(this: ExtWebSocket) {
 
 // Handle WebSocket connections
 wss.on('connection', (ws: ExtWebSocket) => {
+
   console.log('New WebSocket connection established.');
   ws.isAlive = true;
+
+  // log error
+  ws.on('error', (err) =>console.error(err));
 
   // Attach heartbeat listener
   ws.on('pong', heartbeat.bind(ws));  // Use bind to explicitly bind `this` to `ws`

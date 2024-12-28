@@ -2,7 +2,8 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 const http_1 = require("http");
 const ws_1 = require("ws");
-const PORT = process.env.PORT || 3000;
+// const PORT = process.env.PORT || 8080;
+const PORT = 8080;
 // Create the HTTP server
 const server = (0, http_1.createServer)((req, res) => {
     res.writeHead(200, { 'Content-Type': 'text/plain' });
@@ -26,6 +27,8 @@ function heartbeat() {
 wss.on('connection', (ws) => {
     console.log('New WebSocket connection established.');
     ws.isAlive = true;
+    // log error 
+    ws.on('error', (err) => console.error(err));
     // Attach heartbeat listener
     ws.on('pong', heartbeat.bind(ws)); // Use bind to explicitly bind `this` to `ws`
     // Send a welcome message to the client
