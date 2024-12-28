@@ -35,3 +35,8 @@ const ws = new WebSocket('ws://localhost:3000');
 ws.onopen = () => ws.send('Hello from Client 1!');
 
 ws.onmessage = (event) => console.log(event.data);
+
+3. Install express
+npm install express @types/express
+
+npx tsc -b; node dist/server.js

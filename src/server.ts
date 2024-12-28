@@ -1,3 +1,4 @@
+import express from 'express';
 import { createServer } from 'http';
 import { WebSocketServer, WebSocket } from 'ws';
 
@@ -6,14 +7,18 @@ interface ExtWebSocket extends WebSocket {
   isAlive: boolean;
 }
 
-// const PORT = process.env.PORT || 8080;
-const PORT = 8080;
+const PORT = process.env.PORT || 8080;
 
-// Create the HTTP server
-const server = createServer((req, res) => {
-  res.writeHead(200, { 'Content-Type': 'text/plain' });
-  res.end('HTTP Server with WebSocket support!');
+// Initialize Express
+const app = express();
+
+// Define a simple route
+app.get('/', (req, res) => {
+  res.send('Express server with WebSocket support!');
 });
+
+// Create the HTTP server from Express
+const server = createServer(app);
 
 // Create the WebSocket server
 const wss = new WebSocketServer({ server });
@@ -34,15 +39,14 @@ function heartbeat(this: ExtWebSocket) {
 
 // Handle WebSocket connections
 wss.on('connection', (ws: ExtWebSocket) => {
-
   console.log('New WebSocket connection established.');
   ws.isAlive = true;
 
-  // log error
-  ws.on('error', (err) =>console.error(err));
+  // Log errors
+  ws.on('error', (err) => console.error(err));
 
   // Attach heartbeat listener
-  ws.on('pong', heartbeat.bind(ws));  // Use bind to explicitly bind `this` to `ws`
+  ws.on('pong', heartbeat.bind(ws)); // Use bind to explicitly bind `this` to `ws`
 
   // Send a welcome message to the client
   ws.send('Welcome to the WebSocket server!');
@@ -77,7 +81,7 @@ wss.on('close', () => {
   clearInterval(interval);
 });
 
-// Start the HTTP server
+// Start the server
 server.listen(PORT, () => {
   console.log(`Server is running at http://localhost:${PORT}`);
   console.log('WebSocket server is ready.');

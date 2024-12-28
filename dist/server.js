@@ -1,14 +1,20 @@
 "use strict";
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
+const express_1 = __importDefault(require("express"));
 const http_1 = require("http");
 const ws_1 = require("ws");
-// const PORT = process.env.PORT || 8080;
-const PORT = 8080;
-// Create the HTTP server
-const server = (0, http_1.createServer)((req, res) => {
-    res.writeHead(200, { 'Content-Type': 'text/plain' });
-    res.end('HTTP Server with WebSocket support!');
+const PORT = process.env.PORT || 8080;
+// Initialize Express
+const app = (0, express_1.default)();
+// Define a simple route
+app.get('/', (req, res) => {
+    res.send('Express server with WebSocket support!');
 });
+// Create the HTTP server from Express
+const server = (0, http_1.createServer)(app);
 // Create the WebSocket server
 const wss = new ws_1.WebSocketServer({ server });
 // Broadcast a message to all connected clients
@@ -27,7 +33,7 @@ function heartbeat() {
 wss.on('connection', (ws) => {
     console.log('New WebSocket connection established.');
     ws.isAlive = true;
-    // log error 
+    // Log errors
     ws.on('error', (err) => console.error(err));
     // Attach heartbeat listener
     ws.on('pong', heartbeat.bind(ws)); // Use bind to explicitly bind `this` to `ws`
@@ -59,7 +65,7 @@ const interval = setInterval(() => {
 wss.on('close', () => {
     clearInterval(interval);
 });
-// Start the HTTP server
+// Start the server
 server.listen(PORT, () => {
     console.log(`Server is running at http://localhost:${PORT}`);
     console.log('WebSocket server is ready.');
